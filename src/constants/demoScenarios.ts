@@ -1,0 +1,136 @@
+import { CalculatorState } from '../types';
+
+export const demoScenarios = [
+  {
+    id: 'enterprise-customer-service',
+    title: 'Enterprise Customer Service',
+    description: 'AI agents handling customer inquiries and support tickets for a large corporation',
+    data: {
+      humanCosts: {
+        employeeCount: 25,
+        averageSalary: 65000,
+        benefitsPercentage: 30,
+        workHoursPerWeek: 40,
+        workWeeksPerYear: 50,
+        vacationDaysPerYear: 10,
+        trainingCostsPerYear: 2500,
+        turnoverRate: 20,
+        replacementCostMultiplier: 1.5,
+        officeSpacePerEmployee: 150,
+        officeSpaceCostPerSqFt: 30,
+        equipmentCostPerEmployee: 3000,
+        equipmentLifespanYears: 3,
+      },
+      agentCosts: {
+        agentCount: 5,
+        averageCostPerAgent: 1200,
+        implementationCost: 25000,
+        maintenanceCostPercentage: 15,
+        trainingHoursRequired: 40,
+        trainingCostPerHour: 150,
+        upgradeCostPerYear: 15000,
+        licensingCostPerAgent: 750,
+        supportCostPercentage: 10,
+        integrationCostPerYear: 8000,
+      },
+      performance: {
+        humanProductivityHoursPerDay: 6.5,
+        agentProductivityMultiplier: 3.2,
+        humanErrorRate: 5,
+        agentErrorRate: 2,
+        customerSatisfactionHuman: 85,
+        customerSatisfactionAgent: 90,
+        responseTimeHumanMinutes: 25,
+        responseTimeAgentMinutes: 0.5,
+      }
+    } as CalculatorState
+  },
+  {
+    id: 'small-business-automation',
+    title: 'Small Business Automation',
+    description: 'AI agents handling administrative tasks and data entry for a small business',
+    data: {
+      humanCosts: {
+        employeeCount: 3,
+        averageSalary: 45000,
+        benefitsPercentage: 20,
+        workHoursPerWeek: 40,
+        workWeeksPerYear: 50,
+        vacationDaysPerYear: 10,
+        trainingCostsPerYear: 1000,
+        turnoverRate: 15,
+        replacementCostMultiplier: 1.2,
+        officeSpacePerEmployee: 100,
+        officeSpaceCostPerSqFt: 25,
+        equipmentCostPerEmployee: 2000,
+        equipmentLifespanYears: 3,
+      },
+      agentCosts: {
+        agentCount: 2,
+        averageCostPerAgent: 600,
+        implementationCost: 5000,
+        maintenanceCostPercentage: 10,
+        trainingHoursRequired: 20,
+        trainingCostPerHour: 100,
+        upgradeCostPerYear: 3000,
+        licensingCostPerAgent: 500,
+        supportCostPercentage: 8,
+        integrationCostPerYear: 2000,
+      },
+      performance: {
+        humanProductivityHoursPerDay: 6,
+        agentProductivityMultiplier: 2.5,
+        humanErrorRate: 8,
+        agentErrorRate: 3,
+        customerSatisfactionHuman: 80,
+        customerSatisfactionAgent: 85,
+        responseTimeHumanMinutes: 30,
+        responseTimeAgentMinutes: 1,
+      }
+    } as CalculatorState
+  },
+  {
+    id: 'healthcare-admin',
+    title: 'Healthcare Administrative Support',
+    description: 'AI agents handling patient scheduling, records management, and billing inquiries',
+    data: {
+      humanCosts: {
+        employeeCount: 12,
+        averageSalary: 55000,
+        benefitsPercentage: 35,
+        workHoursPerWeek: 40,
+        workWeeksPerYear: 50,
+        vacationDaysPerYear: 15,
+        trainingCostsPerYear: 3000,
+        turnoverRate: 18,
+        replacementCostMultiplier: 1.6,
+        officeSpacePerEmployee: 120,
+        officeSpaceCostPerSqFt: 35,
+        equipmentCostPerEmployee: 3500,
+        equipmentLifespanYears: 4,
+      },
+      agentCosts: {
+        agentCount: 4,
+        averageCostPerAgent: 1500,
+        implementationCost: 30000,
+        maintenanceCostPercentage: 20,
+        trainingHoursRequired: 60,
+        trainingCostPerHour: 200,
+        upgradeCostPerYear: 18000,
+        licensingCostPerAgent: 900,
+        supportCostPercentage: 15,
+        integrationCostPerYear: 12000,
+      },
+      performance: {
+        humanProductivityHoursPerDay: 6,
+        agentProductivityMultiplier: 2.8,
+        humanErrorRate: 6,
+        agentErrorRate: 1.5,
+        customerSatisfactionHuman: 82,
+        customerSatisfactionAgent: 88,
+        responseTimeHumanMinutes: 35,
+        responseTimeAgentMinutes: 0.8,
+      }
+    } as CalculatorState
+  }
+];
