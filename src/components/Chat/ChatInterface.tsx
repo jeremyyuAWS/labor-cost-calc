@@ -346,29 +346,114 @@ Implementation cost recovery:
     // Show calculator
     setShowCalculator(true);
     
-    // Consolidated walkthrough message with all information
-    addMessage({
-      id: Date.now().toString(),
-      text: `Let's start a guided walkthrough of the AI Labor Cost Calculator. I've loaded a sample scenario for us to explore:
+    // Enhanced walkthrough with rich conversation flow
+    const demoMessages = [
+      {
+        id: Date.now().toString(),
+        text: `👋 Welcome to the AI Labor Cost Calculator demo! Let's explore how AI agents can transform your business operations.
 
-• A team of 10 employees with an average salary of $65,000
-• AI agents costing $12 per hour with 2.5x efficiency multiplier
-• One-time implementation cost of $10,000
+I've loaded a sample scenario for a customer service team:
+• 10 employees with $65,000 annual salary
+• AI agents at $12/hour with 2.5x efficiency
+• $10,000 implementation cost
 
-I've opened the calculator panel so you can see the detailed inputs.
+Would you like to see how this compares to your current costs?`,
+        sender: 'agent',
+        timestamp: new Date()
+      },
+      {
+        id: (Date.now() + 1).toString(),
+        text: `Let me show you the cost comparison first:
 
-Based on these parameters, here's the cost comparison:
-• Human labor: ${formatCurrency(calculateResults(calculatorState).humanCostPerTask)} per task
-• AI agent: ${formatCurrency(calculateResults(calculatorState).agentCostPerTask)} per task
+• Human labor cost per task: ${formatCurrency(calculateResults(calculatorState).humanCostPerTask)}
+• AI agent cost per task: ${formatCurrency(calculateResults(calculatorState).agentCostPerTask)}
 • Cost reduction: ${Math.round(calculateResults(calculatorState).costSavingsPercentage)}% per task
 
-You can try asking:
-• "Show me a cost comparison chart" 
-• "What's the monthly savings?"
-• "How long until we break even?"
-• "Update the agent cost to $15 per hour"`,
-      sender: 'agent',
-      timestamp: new Date()
+This means for every task your team handles, you could save ${formatCurrency(calculateResults(calculatorState).costSavingsPerTask)} by using AI agents.
+
+Would you like to see how this translates to monthly savings?`,
+        sender: 'agent',
+        timestamp: new Date()
+      },
+      {
+        id: (Date.now() + 2).toString(),
+        text: `Here's the monthly impact:
+
+• Monthly cost savings: ${formatCurrency(calculateResults(calculatorState).monthlyCostSavings)}
+• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
+• Break-even point: ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months
+
+The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in just ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months!
+
+Would you like to see a visual comparison of these savings?`,
+        sender: 'agent',
+        timestamp: new Date()
+      },
+      {
+        id: (Date.now() + 3).toString(),
+        text: `Let me show you a visual breakdown of the cost comparison:`,
+        sender: 'agent',
+        timestamp: new Date(),
+        visual: {
+          type: 'chart',
+          data: {
+            type: 'bar',
+            title: 'Cost Comparison',
+            data: {
+              labels: ['Human Labor', 'AI Agent'],
+              datasets: [{
+                label: 'Cost per Task ($)',
+                data: [
+                  Math.round(calculateResults(calculatorState).humanCostPerTask),
+                  Math.round(calculateResults(calculatorState).agentCostPerTask)
+                ],
+                backgroundColor: ['#ef4444', '#22c55e']
+              }]
+            },
+            yAxisLabel: 'Cost ($)'
+          }
+        }
+      },
+      {
+        id: (Date.now() + 4).toString(),
+        text: `Now, let's look at the time efficiency:
+
+• Human time per task: ${Math.round(calculateResults(calculatorState).humanTimePerTask)} minutes
+• AI agent time per task: ${Math.round(calculateResults(calculatorState).agentTimePerTask)} minutes
+• Time savings: ${Math.round(calculateResults(calculatorState).timeSavingsPerTask)} minutes (${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% faster)
+• Monthly time savings: ${Math.round(calculateResults(calculatorState).monthlyTimeSavings / 60)} hours
+
+This means your team could handle ${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% more tasks in the same amount of time!
+
+Would you like to see how this affects your ROI?`,
+        sender: 'agent',
+        timestamp: new Date()
+      },
+      {
+        id: (Date.now() + 5).toString(),
+        text: `Let's calculate the ROI:
+
+• First-year ROI: ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)}
+• Implementation cost: ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)}
+• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
+• Net first-year benefit: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost)}
+
+This means for every dollar invested in AI implementation, you'll get ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)} back in the first year!
+
+Would you like to:
+1. See a detailed breakdown of any of these metrics?
+2. Try different scenarios by adjusting the parameters?
+3. Export this analysis for your team?
+
+Just let me know what interests you most!`,
+        sender: 'agent',
+        timestamp: new Date()
+      }
+    ];
+
+    // Add all demo messages
+    demoMessages.forEach(message => {
+      addMessage(message);
     });
   };
   
