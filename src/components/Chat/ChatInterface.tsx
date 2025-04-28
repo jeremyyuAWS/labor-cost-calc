@@ -69,7 +69,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ showCalculator, setShowCa
     // Process message with AI (simulated)
     setTimeout(() => {
       processUserQuery(userQuery);
-      setIsProcessing(false);
     }, 1000);
   };
   
@@ -92,40 +91,41 @@ Would you like me to guide you through a quick demo scenario?`,
   };
   
   const processUserQuery = (query: string) => {
-    const lowerQuery = query.toLowerCase();
-    const results = calculateResults(calculatorState);
-    
-    // Check for demo or walkthrough requests
-    if (lowerQuery.includes('walk me through') || lowerQuery.includes('demo scenario') || lowerQuery.includes('show me a demo')) {
-      const { dispatch } = useContext(CalculatorContext);
+    try {
+      const lowerQuery = query.toLowerCase();
+      const results = calculateResults(calculatorState);
       
-      // Reset to a specific configuration for the walkthrough
-      dispatch({
-        type: 'SET_CALCULATOR_STATE',
-        payload: {
-          humanLabor: {
-            employeeSalary: 65000,
-            employeeHoursPerDay: 8,
-            employeeCount: 10,
-            employeeOverheadPercentage: 30
-          },
-          agentLabor: {
-            agentCostPerHour: 12,
-            agentHoursPerDay: 24,
-            agentEfficiencyMultiplier: 2.5,
-            agentImplementationCost: 10000
+      // Check for demo or walkthrough requests
+      if (lowerQuery.includes('walk me through') || lowerQuery.includes('demo scenario') || lowerQuery.includes('show me a demo')) {
+        const { dispatch } = useContext(CalculatorContext);
+        
+        // Reset to a specific configuration for the walkthrough
+        dispatch({
+          type: 'SET_CALCULATOR_STATE',
+          payload: {
+            humanLabor: {
+              employeeSalary: 65000,
+              employeeHoursPerDay: 8,
+              employeeCount: 10,
+              employeeOverheadPercentage: 30
+            },
+            agentLabor: {
+              agentCostPerHour: 12,
+              agentHoursPerDay: 24,
+              agentEfficiencyMultiplier: 2.5,
+              agentImplementationCost: 10000
+            }
           }
-        }
-      });
-      
-      // Show calculator
-      setShowCalculator(true);
-      
-      // Enhanced walkthrough with rich conversation flow
-      const demoMessages = [
-        {
-          id: Date.now().toString(),
-          text: `👋 I'd be happy to walk you through a demo scenario! Let's explore how AI agents can transform a customer service team's operations.
+        });
+        
+        // Show calculator
+        setShowCalculator(true);
+        
+        // Enhanced walkthrough with rich conversation flow
+        const demoMessages = [
+          {
+            id: Date.now().toString(),
+            text: `👋 I'd be happy to walk you through a demo scenario! Let's explore how AI agents can transform a customer service team's operations.
 
 I've loaded a realistic scenario:
 • 10 customer service representatives with $65,000 annual salary
@@ -133,12 +133,12 @@ I've loaded a realistic scenario:
 • $10,000 implementation cost
 
 Let's start by looking at the cost comparison. Would you like to see how this compares to your current costs?`,
-          sender: 'agent',
-          timestamp: new Date()
-        },
-        {
-          id: (Date.now() + 1).toString(),
-          text: `Here's the cost comparison for handling customer inquiries:
+            sender: 'agent',
+            timestamp: new Date()
+          },
+          {
+            id: (Date.now() + 1).toString(),
+            text: `Here's the cost comparison for handling customer inquiries:
 
 • Human labor cost per inquiry: ${formatCurrency(calculateResults(calculatorState).humanCostPerTask)}
 • AI agent cost per inquiry: ${formatCurrency(calculateResults(calculatorState).agentCostPerTask)}
@@ -147,12 +147,12 @@ Let's start by looking at the cost comparison. Would you like to see how this co
 This means for every customer inquiry your team handles, you could save ${formatCurrency(calculateResults(calculatorState).costSavingsPerTask)} by using AI agents.
 
 Would you like to see how this translates to monthly savings?`,
-          sender: 'agent',
-          timestamp: new Date()
-        },
-        {
-          id: (Date.now() + 2).toString(),
-          text: `Let's look at the monthly impact:
+            sender: 'agent',
+            timestamp: new Date()
+          },
+          {
+            id: (Date.now() + 2).toString(),
+            text: `Let's look at the monthly impact:
 
 • Monthly cost savings: ${formatCurrency(calculateResults(calculatorState).monthlyCostSavings)}
 • Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
@@ -161,37 +161,37 @@ Would you like to see how this translates to monthly savings?`,
 The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in just ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months!
 
 Would you like to see a visual comparison of these savings?`,
-          sender: 'agent',
-          timestamp: new Date()
-        },
-        {
-          id: (Date.now() + 3).toString(),
-          text: `Here's a visual breakdown of the cost comparison:`,
-          sender: 'agent',
-          timestamp: new Date(),
-          visual: {
-            type: 'chart',
-            data: {
-              type: 'bar',
-              title: 'Cost Comparison per Customer Inquiry',
+            sender: 'agent',
+            timestamp: new Date()
+          },
+          {
+            id: (Date.now() + 3).toString(),
+            text: `Here's a visual breakdown of the cost comparison:`,
+            sender: 'agent',
+            timestamp: new Date(),
+            visual: {
+              type: 'chart',
               data: {
-                labels: ['Human Labor', 'AI Agent'],
-                datasets: [{
-                  label: 'Cost per Inquiry ($)',
-                  data: [
-                    Math.round(calculateResults(calculatorState).humanCostPerTask),
-                    Math.round(calculateResults(calculatorState).agentCostPerTask)
-                  ],
-                  backgroundColor: ['#ef4444', '#22c55e']
-                }]
-              },
-              yAxisLabel: 'Cost ($)'
+                type: 'bar',
+                title: 'Cost Comparison per Customer Inquiry',
+                data: {
+                  labels: ['Human Labor', 'AI Agent'],
+                  datasets: [{
+                    label: 'Cost per Inquiry ($)',
+                    data: [
+                      Math.round(calculateResults(calculatorState).humanCostPerTask),
+                      Math.round(calculateResults(calculatorState).agentCostPerTask)
+                    ],
+                    backgroundColor: ['#ef4444', '#22c55e']
+                  }]
+                },
+                yAxisLabel: 'Cost ($)'
+              }
             }
-          }
-        },
-        {
-          id: (Date.now() + 4).toString(),
-          text: `Now, let's examine the time efficiency:
+          },
+          {
+            id: (Date.now() + 4).toString(),
+            text: `Now, let's examine the time efficiency:
 
 • Human time per inquiry: ${Math.round(calculateResults(calculatorState).humanTimePerTask)} minutes
 • AI agent time per inquiry: ${Math.round(calculateResults(calculatorState).agentTimePerTask)} minutes
@@ -201,12 +201,12 @@ Would you like to see a visual comparison of these savings?`,
 This means your team could handle ${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% more customer inquiries in the same amount of time!
 
 Would you like to see how this affects your ROI?`,
-          sender: 'agent',
-          timestamp: new Date()
-        },
-        {
-          id: (Date.now() + 5).toString(),
-          text: `Let's calculate the ROI:
+            sender: 'agent',
+            timestamp: new Date()
+          },
+          {
+            id: (Date.now() + 5).toString(),
+            text: `Let's calculate the ROI:
 
 • First-year ROI: ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)}
 • Implementation cost: ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)}
@@ -222,68 +222,68 @@ Would you like to:
 4. Explore how this would work for a different team size or salary?
 
 Just let me know what interests you most!`,
+            sender: 'agent',
+            timestamp: new Date()
+          }
+        ];
+
+        // Add all demo messages
+        demoMessages.forEach(message => {
+          addMessage(message);
+        });
+        return;
+      }
+      
+      // Check for chart requests
+      if (lowerQuery.includes('chart') || lowerQuery.includes('graph') || lowerQuery.includes('visual')) {
+        handleChartRequest(lowerQuery);
+        return;
+      }
+      
+      // Check for calculator parameter update queries
+      if (lowerQuery.includes('set') || lowerQuery.includes('update') || lowerQuery.includes('change')) {
+        // Handle parameter updates
+        if (handleParameterUpdate(query)) {
+          return; // Parameter update was handled
+        }
+      }
+      
+      // Check for export request
+      if (lowerQuery.includes('export') || lowerQuery.includes('download') || lowerQuery.includes('save chat')) {
+        exportChatHistory();
+        addMessage({
+          id: Date.now().toString(),
+          text: `I've exported your chat history as a CSV file. It should be downloading now.`,
           sender: 'agent',
           timestamp: new Date()
-        }
-      ];
-
-      // Add all demo messages
-      demoMessages.forEach(message => {
-        addMessage(message);
-      });
-      return;
-    }
-    
-    // Check for chart requests
-    if (lowerQuery.includes('chart') || lowerQuery.includes('graph') || lowerQuery.includes('visual')) {
-      handleChartRequest(lowerQuery);
-      return;
-    }
-    
-    // Check for calculator parameter update queries
-    if (lowerQuery.includes('set') || lowerQuery.includes('update') || lowerQuery.includes('change')) {
-      // Handle parameter updates
-      if (handleParameterUpdate(query)) {
-        return; // Parameter update was handled
+        });
+        return;
       }
-    }
-    
-    // Check for export request
-    if (lowerQuery.includes('export') || lowerQuery.includes('download') || lowerQuery.includes('save chat')) {
-      exportChatHistory();
-      addMessage({
-        id: Date.now().toString(),
-        text: `I've exported your chat history as a CSV file. It should be downloading now.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-      return;
-    }
-    
-    // Check for clear/reset request
-    if (lowerQuery.includes('clear chat') || lowerQuery.includes('reset chat') || lowerQuery.includes('start over')) {
-      clearMessages();
-      setShowIntro(true);
-      addMessage({
-        id: Date.now().toString(),
-        text: `I've cleared our conversation history. Let's start fresh! How can I help you with AI labor cost calculations today?`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-      return;
-    }
-    
-    // Use conversation context to provide more relevant responses
-    let contextualResponse = "";
-    if (conversationContext.length > 0) {
-      const previousQueries = conversationContext.join(" ");
       
-      if (lowerQuery.includes('more') || lowerQuery.includes('details') || lowerQuery.includes('elaborate')) {
-        if (previousQueries.includes('roi')) {
-          const firstYearROI = (results.yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / 
-                              calculatorState.agentLabor.agentImplementationCost * 100;
-          
-          contextualResponse = `Let me elaborate on the ROI analysis:
+      // Check for clear/reset request
+      if (lowerQuery.includes('clear chat') || lowerQuery.includes('reset chat') || lowerQuery.includes('start over')) {
+        clearMessages();
+        setShowIntro(true);
+        addMessage({
+          id: Date.now().toString(),
+          text: `I've cleared our conversation history. Let's start fresh! How can I help you with AI labor cost calculations today?`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
+        return;
+      }
+      
+      // Use conversation context to provide more relevant responses
+      let contextualResponse = "";
+      if (conversationContext.length > 0) {
+        const previousQueries = conversationContext.join(" ");
+        
+        if (lowerQuery.includes('more') || lowerQuery.includes('details') || lowerQuery.includes('elaborate')) {
+          if (previousQueries.includes('roi')) {
+            const firstYearROI = (results.yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / 
+                                calculatorState.agentLabor.agentImplementationCost * 100;
+            
+            contextualResponse = `Let me elaborate on the ROI analysis:
 
 The first-year ROI for implementing AI agents would be ${formatPercentage(firstYearROI)}. This means that for every dollar invested in the implementation, you'll get ${formatPercentage(firstYearROI)} in return within the first year.
 
@@ -293,8 +293,8 @@ Net first-year benefit: ${formatCurrency(results.yearlyProjectedSavings - calcul
 Break-even point: ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / results.monthlyCostSavings)} months
 
 Would you like to see how these numbers would change with different parameters?`;
-        } else if (previousQueries.includes('savings') || previousQueries.includes('cost')) {
-          contextualResponse = `Here's a more detailed breakdown of the cost savings:
+          } else if (previousQueries.includes('savings') || previousQueries.includes('cost')) {
+            contextualResponse = `Here's a more detailed breakdown of the cost savings:
 
 Per task:
 - Human labor: ${formatCurrency(results.humanCostPerTask)}
@@ -311,145 +311,148 @@ Yearly projection:
 Implementation cost recovery:
 - Initial investment: ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)}
 - Months to break even: ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / results.monthlyCostSavings)}`;
+          }
         }
       }
-    }
-    
-    if (contextualResponse) {
-      addMessage({
-        id: Date.now().toString(),
-        text: contextualResponse,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-      return;
-    }
-    
-    // Check for calculator-related queries
-    if (lowerQuery.includes('roi') || 
-        lowerQuery.includes('savings') || 
-        lowerQuery.includes('cost') || 
-        lowerQuery.includes('calculate')) {
       
-      let response = '';
+      if (contextualResponse) {
+        addMessage({
+          id: Date.now().toString(),
+          text: contextualResponse,
+          sender: 'agent',
+          timestamp: new Date()
+        });
+        return;
+      }
       
-      if (lowerQuery.includes('roi') || lowerQuery.includes('return on investment')) {
-        const firstYearROI = (results.yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / 
-                            calculatorState.agentLabor.agentImplementationCost * 100;
+      // Check for calculator-related queries
+      if (lowerQuery.includes('roi') || 
+          lowerQuery.includes('savings') || 
+          lowerQuery.includes('cost') || 
+          lowerQuery.includes('calculate')) {
         
-        response = `Based on your inputs, the first-year ROI for implementing AI agents would be ${formatPercentage(firstYearROI)}. 
-        The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in approximately 
-        ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / results.monthlyCostSavings)} months.`;
-      } 
-      else if (lowerQuery.includes('savings') || lowerQuery.includes('save')) {
-        response = `By implementing AI agents with your current configuration, you can expect:
-        • ${formatCurrency(results.costSavingsPerTask)} savings per task (${Math.round(results.costSavingsPercentage)}% reduction)
-        • ${formatCurrency(results.monthlyCostSavings)} monthly cost savings
-        • ${formatCurrency(results.yearlyProjectedSavings)} projected annual savings`;
+        let response = '';
+        
+        if (lowerQuery.includes('roi') || lowerQuery.includes('return on investment')) {
+          const firstYearROI = (results.yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / 
+                              calculatorState.agentLabor.agentImplementationCost * 100;
+          
+          response = `Based on your inputs, the first-year ROI for implementing AI agents would be ${formatPercentage(firstYearROI)}. 
+          The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in approximately 
+          ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / results.monthlyCostSavings)} months.`;
+        } 
+        else if (lowerQuery.includes('savings') || lowerQuery.includes('save')) {
+          response = `By implementing AI agents with your current configuration, you can expect:
+          • ${formatCurrency(results.costSavingsPerTask)} savings per task (${Math.round(results.costSavingsPercentage)}% reduction)
+          • ${formatCurrency(results.monthlyCostSavings)} monthly cost savings
+          • ${formatCurrency(results.yearlyProjectedSavings)} projected annual savings`;
+        }
+        else if (lowerQuery.includes('cost comparison') || lowerQuery.includes('compare costs')) {
+          response = `Cost comparison between human labor and AI agents:
+          • Human labor cost per task: ${formatCurrency(results.humanCostPerTask)}
+          • AI agent cost per task: ${formatCurrency(results.agentCostPerTask)}
+          • Difference: ${formatCurrency(results.costSavingsPerTask)} (${Math.round(results.costSavingsPercentage)}% savings)`;
+        }
+        else if (lowerQuery.includes('time') || lowerQuery.includes('efficiency')) {
+          response = `Time efficiency comparison:
+          • Human time per task: ${Math.round(results.humanTimePerTask)} minutes
+          • AI agent time per task: ${Math.round(results.agentTimePerTask)} minutes
+          • Time savings: ${Math.round(results.timeSavingsPerTask)} minutes (${Math.round(results.timeSavingsPercentage)}% faster)
+          • Monthly time savings: ${Math.round(results.monthlyTimeSavings / 60)} hours`;
+        }
+        else {
+          response = `Based on your current configuration:
+          
+          Monthly savings: ${formatCurrency(results.monthlyCostSavings)}
+          Annual savings: ${formatCurrency(results.yearlyProjectedSavings)}
+          Time reduction: ${Math.round(results.timeSavingsPercentage)}%
+          
+          Would you like to see more detailed information about ROI, costs, or time savings?`;
+        }
+        
+        addMessage({
+          id: Date.now().toString(),
+          text: response,
+          sender: 'agent',
+          timestamp: new Date()
+        });
       }
-      else if (lowerQuery.includes('cost comparison') || lowerQuery.includes('compare costs')) {
-        response = `Cost comparison between human labor and AI agents:
-        • Human labor cost per task: ${formatCurrency(results.humanCostPerTask)}
-        • AI agent cost per task: ${formatCurrency(results.agentCostPerTask)}
-        • Difference: ${formatCurrency(results.costSavingsPerTask)} (${Math.round(results.costSavingsPercentage)}% savings)`;
+      // Check for calculator toggle commands
+      else if (lowerQuery.includes('show calculator') || lowerQuery.includes('open calculator')) {
+        setShowCalculator(true);
+        addMessage({
+          id: Date.now().toString(),
+          text: `I've opened the calculator panel for you. You can now see and adjust all parameters directly.`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
       }
-      else if (lowerQuery.includes('time') || lowerQuery.includes('efficiency')) {
-        response = `Time efficiency comparison:
-        • Human time per task: ${Math.round(results.humanTimePerTask)} minutes
-        • AI agent time per task: ${Math.round(results.agentTimePerTask)} minutes
-        • Time savings: ${Math.round(results.timeSavingsPerTask)} minutes (${Math.round(results.timeSavingsPercentage)}% faster)
-        • Monthly time savings: ${Math.round(results.monthlyTimeSavings / 60)} hours`;
+      else if (lowerQuery.includes('hide calculator') || lowerQuery.includes('close calculator')) {
+        setShowCalculator(false);
+        addMessage({
+          id: Date.now().toString(),
+          text: `I've closed the calculator panel. You can still ask me about calculations or request to show the calculator again.`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
       }
+      // Check for help or instructions queries
+      else if (lowerQuery.includes('help') || lowerQuery.includes('how to') || lowerQuery.includes('what can you do')) {
+        addMessage({
+          id: Date.now().toString(),
+          text: `I can help you with:
+          
+          • Calculating ROI for implementing AI agents
+          • Comparing costs between human labor and AI agents
+          • Estimating time and cost savings
+          • Analyzing the break-even point for your investment
+          • Creating visual charts and comparisons
+          
+          You can ask me questions like:
+          • "What's the ROI for this configuration?"
+          • "How much can I save monthly?"
+          • "Compare time efficiency between humans and AI agents"
+          • "Show me a cost comparison chart"
+          
+          You can also update parameters by saying things like:
+          • "Update agent cost to $15 per hour"
+          • "Set employee count to 10"
+          • "Change efficiency multiplier to 3.5"
+          
+          Say "show calculator" to see the full calculator panel.`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
+      }
+      // Greeting or acknowledgment
+      else if (lowerQuery.includes('hello') || lowerQuery.includes('hi') || lowerQuery.includes('hey')) {
+        addMessage({
+          id: Date.now().toString(),
+          text: `Hello! I'm your AI Labor Cost Calculator assistant. How can I help you today? You can ask me about ROI calculations, cost savings, or time efficiency comparisons based on your current configuration.`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
+      }
+      // Other queries
       else {
-        response = `Based on your current configuration:
-        
-        Monthly savings: ${formatCurrency(results.monthlyCostSavings)}
-        Annual savings: ${formatCurrency(results.yearlyProjectedSavings)}
-        Time reduction: ${Math.round(results.timeSavingsPercentage)}%
-        
-        Would you like to see more detailed information about ROI, costs, or time savings?`;
+        addMessage({
+          id: Date.now().toString(),
+          text: `I understand you're asking about "${query}". To provide the most accurate information, I focus on calculating and analyzing labor costs between human workers and AI agents.
+          
+          Would you like me to help you with:
+          • ROI calculations
+          • Cost savings estimates
+          • Time efficiency comparisons
+          • Break-even analysis
+          • Visual charts of the data
+          
+          You can also say "show calculator" to view and adjust all parameters.`,
+          sender: 'agent',
+          timestamp: new Date()
+        });
       }
-      
-      addMessage({
-        id: Date.now().toString(),
-        text: response,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-    }
-    // Check for calculator toggle commands
-    else if (lowerQuery.includes('show calculator') || lowerQuery.includes('open calculator')) {
-      setShowCalculator(true);
-      addMessage({
-        id: Date.now().toString(),
-        text: `I've opened the calculator panel for you. You can now see and adjust all parameters directly.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-    }
-    else if (lowerQuery.includes('hide calculator') || lowerQuery.includes('close calculator')) {
-      setShowCalculator(false);
-      addMessage({
-        id: Date.now().toString(),
-        text: `I've closed the calculator panel. You can still ask me about calculations or request to show the calculator again.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-    }
-    // Check for help or instructions queries
-    else if (lowerQuery.includes('help') || lowerQuery.includes('how to') || lowerQuery.includes('what can you do')) {
-      addMessage({
-        id: Date.now().toString(),
-        text: `I can help you with:
-        
-        • Calculating ROI for implementing AI agents
-        • Comparing costs between human labor and AI agents
-        • Estimating time and cost savings
-        • Analyzing the break-even point for your investment
-        • Creating visual charts and comparisons
-        
-        You can ask me questions like:
-        • "What's the ROI for this configuration?"
-        • "How much can I save monthly?"
-        • "Compare time efficiency between humans and AI agents"
-        • "Show me a cost comparison chart"
-        
-        You can also update parameters by saying things like:
-        • "Update agent cost to $15 per hour"
-        • "Set employee count to 10"
-        • "Change efficiency multiplier to 3.5"
-        
-        Say "show calculator" to see the full calculator panel.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-    }
-    // Greeting or acknowledgment
-    else if (lowerQuery.includes('hello') || lowerQuery.includes('hi') || lowerQuery.includes('hey')) {
-      addMessage({
-        id: Date.now().toString(),
-        text: `Hello! I'm your AI Labor Cost Calculator assistant. How can I help you today? You can ask me about ROI calculations, cost savings, or time efficiency comparisons based on your current configuration.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
-    }
-    // Other queries
-    else {
-      addMessage({
-        id: Date.now().toString(),
-        text: `I understand you're asking about "${query}". To provide the most accurate information, I focus on calculating and analyzing labor costs between human workers and AI agents.
-        
-        Would you like me to help you with:
-        • ROI calculations
-        • Cost savings estimates
-        • Time efficiency comparisons
-        • Break-even analysis
-        • Visual charts of the data
-        
-        You can also say "show calculator" to view and adjust all parameters.`,
-        sender: 'agent',
-        timestamp: new Date()
-      });
+    } finally {
+      setIsProcessing(false);
     }
   };
   
