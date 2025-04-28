@@ -263,11 +263,11 @@ Implementation cost recovery:
         timestamp: new Date()
       });
     }
-    // Help or instructions queries
+    // Check for help or instructions queries
     else if (lowerQuery.includes('help') || lowerQuery.includes('how to') || lowerQuery.includes('what can you do')) {
       addMessage({
         id: Date.now().toString(),
-        text: `I'm your AI Labor Cost Calculator assistant. I can help you with:
+        text: `I can help you with:
         
         • Calculating ROI for implementing AI agents
         • Comparing costs between human labor and AI agents
