@@ -96,8 +96,141 @@ Would you like me to guide you through a quick demo scenario?`,
     const results = calculateResults(calculatorState);
     
     // Check for demo or walkthrough requests
-    if (lowerQuery.includes('demo') || lowerQuery.includes('guide') || lowerQuery.includes('tutorial') || lowerQuery.includes('walkthrough')) {
-      startWalkthrough();
+    if (lowerQuery.includes('walk me through') || lowerQuery.includes('demo scenario') || lowerQuery.includes('show me a demo')) {
+      const { dispatch } = useContext(CalculatorContext);
+      
+      // Reset to a specific configuration for the walkthrough
+      dispatch({
+        type: 'SET_CALCULATOR_STATE',
+        payload: {
+          humanLabor: {
+            employeeSalary: 65000,
+            employeeHoursPerDay: 8,
+            employeeCount: 10,
+            employeeOverheadPercentage: 30
+          },
+          agentLabor: {
+            agentCostPerHour: 12,
+            agentHoursPerDay: 24,
+            agentEfficiencyMultiplier: 2.5,
+            agentImplementationCost: 10000
+          }
+        }
+      });
+      
+      // Show calculator
+      setShowCalculator(true);
+      
+      // Enhanced walkthrough with rich conversation flow
+      const demoMessages = [
+        {
+          id: Date.now().toString(),
+          text: `👋 I'd be happy to walk you through a demo scenario! Let's explore how AI agents can transform a customer service team's operations.
+
+I've loaded a realistic scenario:
+• 10 customer service representatives with $65,000 annual salary
+• AI agents at $12/hour with 2.5x efficiency
+• $10,000 implementation cost
+
+Let's start by looking at the cost comparison. Would you like to see how this compares to your current costs?`,
+          sender: 'agent',
+          timestamp: new Date()
+        },
+        {
+          id: (Date.now() + 1).toString(),
+          text: `Here's the cost comparison for handling customer inquiries:
+
+• Human labor cost per inquiry: ${formatCurrency(calculateResults(calculatorState).humanCostPerTask)}
+• AI agent cost per inquiry: ${formatCurrency(calculateResults(calculatorState).agentCostPerTask)}
+• Cost reduction: ${Math.round(calculateResults(calculatorState).costSavingsPercentage)}% per inquiry
+
+This means for every customer inquiry your team handles, you could save ${formatCurrency(calculateResults(calculatorState).costSavingsPerTask)} by using AI agents.
+
+Would you like to see how this translates to monthly savings?`,
+          sender: 'agent',
+          timestamp: new Date()
+        },
+        {
+          id: (Date.now() + 2).toString(),
+          text: `Let's look at the monthly impact:
+
+• Monthly cost savings: ${formatCurrency(calculateResults(calculatorState).monthlyCostSavings)}
+• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
+• Break-even point: ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months
+
+The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in just ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months!
+
+Would you like to see a visual comparison of these savings?`,
+          sender: 'agent',
+          timestamp: new Date()
+        },
+        {
+          id: (Date.now() + 3).toString(),
+          text: `Here's a visual breakdown of the cost comparison:`,
+          sender: 'agent',
+          timestamp: new Date(),
+          visual: {
+            type: 'chart',
+            data: {
+              type: 'bar',
+              title: 'Cost Comparison per Customer Inquiry',
+              data: {
+                labels: ['Human Labor', 'AI Agent'],
+                datasets: [{
+                  label: 'Cost per Inquiry ($)',
+                  data: [
+                    Math.round(calculateResults(calculatorState).humanCostPerTask),
+                    Math.round(calculateResults(calculatorState).agentCostPerTask)
+                  ],
+                  backgroundColor: ['#ef4444', '#22c55e']
+                }]
+              },
+              yAxisLabel: 'Cost ($)'
+            }
+          }
+        },
+        {
+          id: (Date.now() + 4).toString(),
+          text: `Now, let's examine the time efficiency:
+
+• Human time per inquiry: ${Math.round(calculateResults(calculatorState).humanTimePerTask)} minutes
+• AI agent time per inquiry: ${Math.round(calculateResults(calculatorState).agentTimePerTask)} minutes
+• Time savings: ${Math.round(calculateResults(calculatorState).timeSavingsPerTask)} minutes (${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% faster)
+• Monthly time savings: ${Math.round(calculateResults(calculatorState).monthlyTimeSavings / 60)} hours
+
+This means your team could handle ${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% more customer inquiries in the same amount of time!
+
+Would you like to see how this affects your ROI?`,
+          sender: 'agent',
+          timestamp: new Date()
+        },
+        {
+          id: (Date.now() + 5).toString(),
+          text: `Let's calculate the ROI:
+
+• First-year ROI: ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)}
+• Implementation cost: ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)}
+• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
+• Net first-year benefit: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost)}
+
+This means for every dollar invested in AI implementation, you'll get ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)} back in the first year!
+
+Would you like to:
+1. See a detailed breakdown of any of these metrics?
+2. Try different scenarios by adjusting the parameters?
+3. Export this analysis for your team?
+4. Explore how this would work for a different team size or salary?
+
+Just let me know what interests you most!`,
+          sender: 'agent',
+          timestamp: new Date()
+        }
+      ];
+
+      // Add all demo messages
+      demoMessages.forEach(message => {
+        addMessage(message);
+      });
       return;
     }
     
@@ -318,143 +451,6 @@ Implementation cost recovery:
         timestamp: new Date()
       });
     }
-  };
-  
-  // Create walk-through tutorial - consolidated into a single message
-  const startWalkthrough = () => {
-    const { dispatch } = useContext(CalculatorContext);
-    
-    // Reset to a specific configuration for the walkthrough
-    dispatch({
-      type: 'SET_CALCULATOR_STATE',
-      payload: {
-        humanLabor: {
-          employeeSalary: 65000,
-          employeeHoursPerDay: 8,
-          employeeCount: 10,
-          employeeOverheadPercentage: 30
-        },
-        agentLabor: {
-          agentCostPerHour: 12,
-          agentHoursPerDay: 24,
-          agentEfficiencyMultiplier: 2.5,
-          agentImplementationCost: 10000
-        }
-      }
-    });
-    
-    // Show calculator
-    setShowCalculator(true);
-    
-    // Enhanced walkthrough with rich conversation flow
-    const demoMessages = [
-      {
-        id: Date.now().toString(),
-        text: `👋 Welcome to the AI Labor Cost Calculator demo! Let's explore how AI agents can transform your business operations.
-
-I've loaded a sample scenario for a customer service team:
-• 10 employees with $65,000 annual salary
-• AI agents at $12/hour with 2.5x efficiency
-• $10,000 implementation cost
-
-Would you like to see how this compares to your current costs?`,
-        sender: 'agent',
-        timestamp: new Date()
-      },
-      {
-        id: (Date.now() + 1).toString(),
-        text: `Let me show you the cost comparison first:
-
-• Human labor cost per task: ${formatCurrency(calculateResults(calculatorState).humanCostPerTask)}
-• AI agent cost per task: ${formatCurrency(calculateResults(calculatorState).agentCostPerTask)}
-• Cost reduction: ${Math.round(calculateResults(calculatorState).costSavingsPercentage)}% per task
-
-This means for every task your team handles, you could save ${formatCurrency(calculateResults(calculatorState).costSavingsPerTask)} by using AI agents.
-
-Would you like to see how this translates to monthly savings?`,
-        sender: 'agent',
-        timestamp: new Date()
-      },
-      {
-        id: (Date.now() + 2).toString(),
-        text: `Here's the monthly impact:
-
-• Monthly cost savings: ${formatCurrency(calculateResults(calculatorState).monthlyCostSavings)}
-• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
-• Break-even point: ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months
-
-The implementation cost of ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)} would be recovered in just ${Math.ceil(calculatorState.agentLabor.agentImplementationCost / calculateResults(calculatorState).monthlyCostSavings)} months!
-
-Would you like to see a visual comparison of these savings?`,
-        sender: 'agent',
-        timestamp: new Date()
-      },
-      {
-        id: (Date.now() + 3).toString(),
-        text: `Let me show you a visual breakdown of the cost comparison:`,
-        sender: 'agent',
-        timestamp: new Date(),
-        visual: {
-          type: 'chart',
-          data: {
-            type: 'bar',
-            title: 'Cost Comparison',
-            data: {
-              labels: ['Human Labor', 'AI Agent'],
-              datasets: [{
-                label: 'Cost per Task ($)',
-                data: [
-                  Math.round(calculateResults(calculatorState).humanCostPerTask),
-                  Math.round(calculateResults(calculatorState).agentCostPerTask)
-                ],
-                backgroundColor: ['#ef4444', '#22c55e']
-              }]
-            },
-            yAxisLabel: 'Cost ($)'
-          }
-        }
-      },
-      {
-        id: (Date.now() + 4).toString(),
-        text: `Now, let's look at the time efficiency:
-
-• Human time per task: ${Math.round(calculateResults(calculatorState).humanTimePerTask)} minutes
-• AI agent time per task: ${Math.round(calculateResults(calculatorState).agentTimePerTask)} minutes
-• Time savings: ${Math.round(calculateResults(calculatorState).timeSavingsPerTask)} minutes (${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% faster)
-• Monthly time savings: ${Math.round(calculateResults(calculatorState).monthlyTimeSavings / 60)} hours
-
-This means your team could handle ${Math.round(calculateResults(calculatorState).timeSavingsPercentage)}% more tasks in the same amount of time!
-
-Would you like to see how this affects your ROI?`,
-        sender: 'agent',
-        timestamp: new Date()
-      },
-      {
-        id: (Date.now() + 5).toString(),
-        text: `Let's calculate the ROI:
-
-• First-year ROI: ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)}
-• Implementation cost: ${formatCurrency(calculatorState.agentLabor.agentImplementationCost)}
-• Annual savings: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings)}
-• Net first-year benefit: ${formatCurrency(calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost)}
-
-This means for every dollar invested in AI implementation, you'll get ${formatPercentage((calculateResults(calculatorState).yearlyProjectedSavings - calculatorState.agentLabor.agentImplementationCost) / calculatorState.agentLabor.agentImplementationCost * 100)} back in the first year!
-
-Would you like to:
-1. See a detailed breakdown of any of these metrics?
-2. Try different scenarios by adjusting the parameters?
-3. Export this analysis for your team?
-
-Just let me know what interests you most!`,
-        sender: 'agent',
-        timestamp: new Date()
-      }
-    ];
-
-    // Add all demo messages
-    demoMessages.forEach(message => {
-      addMessage(message);
-    });
   };
   
   // Handle chart visualization requests
@@ -766,7 +762,7 @@ The chart below visualizes these key metrics (note: break-even months are scaled
         <div className="bg-white border-x border-b border-gray-200 p-3 flex space-x-2 rounded-b-lg shadow-sm">
           <button
             onClick={() => {
-              startWalkthrough();
+              startGuidedTour();
               setShowMenu(false);
             }}
             className="flex items-center text-sm px-3 py-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
